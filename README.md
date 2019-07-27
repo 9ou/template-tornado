@@ -13,7 +13,7 @@ tornado 的优点：并发性能优异，代码简洁轻量，扩展性强。
 在写异步代码的过程中最令人头疼的事情就是有些函数和库是同步且耗时的（例如 IO 读写，requests 网络请求），阻塞了客户代码与 asycio 事件循环的唯一线程，因此在执行调用时，整个应用程序都会冻结。这个问题的解决方法是，使用事件循环对象的 run_in_executor 方法。asyncio 的事件循环在背后维护着一个 ThreadPoolExecutor 对象，我们可以调用 run_in_executor 方法，把可调用对象发给它执行。此功能封装在 `util/thread_pool_util.py` 中。
 
 ## 参数校验
-使用 schema 这个库来做参数校验。可以在 `util/schema_util.py` 中添加自定义参数校验器。
+使用 [schema](https://github.com/keleshev/schema) 这个库来做参数校验。可以在 `util/schema_util.py` 中添加自定义参数校验器。
 
 ## Basic-Info 与协程上下文
 推荐尽量不使用 cookie，一些通用信息（例如客户端类型等）前端可以放在 Basic-Info 这个 Header 中，后端可以将通用信息放在 `aiotask_context` 协程上下文中。
