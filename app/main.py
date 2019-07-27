@@ -39,7 +39,7 @@ DELAY_TASKS = []
 PERIODIC_TASKS = [
     {
         "callback": periodic_task.delete_expired_local_cache,
-        "callback_time": 5000,
+        "callback_time": 1000,
     }
 ]
 
