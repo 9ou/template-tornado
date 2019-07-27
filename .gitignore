@@ -1,0 +1,6 @@
+.DS_Store
+.vscode
+__pycache__
+*.pyc
+venv
+app/config/config.local.yaml
