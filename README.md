@@ -1,5 +1,5 @@
 # Tornado Template
-使用该模板可以快速搭建一个基于 tornado 的 RESTful API 服务器  
+使用该模板可以快速搭建一个基于 tornado 的 RESTful API 服务器。  
 tornado 的优点：并发性能优异，代码简洁轻量，扩展性强。  
 本模板充分利用了 tornado 的这些优点，并在其基础上做了一些扩展与定制，主要功能如下：
 
