@@ -11,3 +11,17 @@ redis:
   port: 6379
   db: 0
   password:
+  min_size: 1
+  max_size: 20
+  timeout: 60
+  encoding: "utf-8"
+
+pg:
+  host: ""
+  user: ""
+  password: ""
+  port: 5432
+  database: ""
+  minsize: 1
+  maxsize: 20
+  command_timeout: 60
