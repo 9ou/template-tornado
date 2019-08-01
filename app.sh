@@ -2,19 +2,18 @@
 
 cmd=$1
 
-home=$(cd $(dirname $0);pwd)
-cd ${home}/app
-PYTHONPATH="${home}:${PYTHONPATH}"
-export PYTHONPATH
-
 PROJECT_NAME="template-tornado"
 LOG_DIR=/data/log/${PROJECT_NAME}
+
+NOTICE_ENV="Can not load ${ENV} from system, only (dev, test, pre, prod) is available"
+NOTICE_USAGE="Usage: `basename $0` cmd(start, stop, restart, log) env(dev, test, pre, prod, or load \${ENV} from system)"
+NOTICE_PARAMS="You provided $# parameters, but 2 are required."
 
 if [ ! -n "$2" ] ;then
     env=${ENV}
     if [ ! -n "${env}" ] ;then
-        echo "Can not load ${ENV} from system, only (dev, test, pre, prod) is available"
-        echo "Usage: `basename $0` cmd(start, stop, restart) env(dev, test, pre, prod, or load \${ENV} from system)"
+        echo ${NOTICE_ENV}
+        echo ${USAGE}
         exit 1
     fi
 else
@@ -23,7 +22,7 @@ fi
 
 function get_num()
 {
-    num=$(ps -ef | grep -w "python main.py --env=${env}" | grep -v grep | wc -l)
+    num=$(ps -ef | grep -w "python app/main.py --name=${PROJECT_NAME} --env=${env}" | grep -v grep | wc -l)
     return ${num}
 }
 
@@ -43,7 +42,7 @@ function start()
         return
     fi
     echo "${PROJECT_NAME} is starting..."
-    pipenv run python main.py --env=${env} >> $LOG_DIR/${PROJECT_NAME}.${env}.log 2>&1 &
+    pipenv run serve --name=${PROJECT_NAME} --env=${env} >> $LOG_DIR/${PROJECT_NAME}.${env}.log 2>&1 &
     sleep 3
     get_num
     num=$?
@@ -58,7 +57,7 @@ function start()
 function stop()
 {
     echo "${PROJECT_NAME} is stopping..."
-    ps -ef | grep "python main.py --env=${env}" | grep -v grep | awk '{print $2}' | xargs kill -9
+    ps -ef | grep "python app/main.py --name=${PROJECT_NAME} --env=${env}" | grep -v grep | awk '{print $2}' | xargs kill -9
     sleep 3
     get_num
     num=$?
@@ -83,18 +82,23 @@ function restart()
     fi
 }
 
+function log()
+{
+    tail -f $LOG_DIR/${PROJECT_NAME}.${env}.log
+}
+
 if [ "$#" -le "2" ];then
     echo "cmd is ${cmd}"
     echo "env is ${env}"
     if [[ "${env}" =~ ^(dev|test|pre|prod)$ ]];then
         "$1"
     else
-        echo "env invalid, only (dev, test, pre, prod) is available"
-        echo "Usage: `basename $0` cmd(start, stop, restart) env(dev, test, pre, prod)"
+        echo ${NOTICE_ENV}
+        echo ${NOTICE_USAGE}
         exit 1
     fi
 else
-    echo "Usage: `basename $0` cmd(start, stop, restart) env(dev, test, pre, prod)"
-    echo "You provided $# parameters, but 2 are required."
+    echo ${NOTICE_USAGE}
+    echo ${NOTICE_PARAMS}
     exit 1
 fi
