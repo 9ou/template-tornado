@@ -1,5 +1,7 @@
 import functools
 import orjson
+import os
+import asyncio
 
 import tornado
 import aiotask_context
@@ -104,7 +106,7 @@ class BasicHandler(tornado.web.RequestHandler):
         message = message or error_util.ERROR_MAP.get(code, {"message": "UNKNOWN ERROR"})["message"]
         self.set_status(status)
         response = {
-            "code": code,
+            "code": code.value,
             "message": message,
             "body": None
         }
@@ -119,13 +121,47 @@ class BasicHandler(tornado.web.RequestHandler):
         }
         return self.finish(orjson.dumps(response))
 
+    def page(self, template, **kwargs):
+        return self.render(os.path.join(config.env, template), **kwargs)
+    
+    def write_error(self, status_code, **kwargs):
+        self.error(status_code)
+    
+    def render_error(self, status_code):
+        page_params = {
+            "status_code": status_code.value
+        }
+        return self.page("error.html", **page_params)
+
+
+class PageNotFoundHandler(BasicHandler):
+    """ 404 页面 handler """
+
+    def get(self):
+        return self.error(error_util.ERROR_CODE.NOT_FOUND)
+    
+    def post(self):
+        return self.error(error_util.ERROR_CODE.NOT_FOUND)
+
+
+class StaticHandler(tornado.web.StaticFileHandler, BasicHandler):
+    """ 静态文件 handler """
+
 
 def set_context(func, *args, **kwargs):
     """ request handler 的装饰器，给每一个 request 设置协程上下文 """
 
     @functools.wraps(func)
-    async def _wrapper(handler, *args, **kwargs):
+    async def _async_wrapper(handler, *args, **kwargs):
         aiotask_context.set("handler", handler)
         await func(handler, *args, **kwargs)
+    
+    @functools.wraps(func)
+    def _sync_wrapper(handler, *args, **kwargs):
+        aiotask_context.set("handler", handler)
+        func(handler, *args, **kwargs)
 
-    return _wrapper
+    if asyncio.iscoroutinefunction(func):
+        return _async_wrapper
+    else:
+        return _sync_wrapper

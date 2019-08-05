@@ -7,6 +7,7 @@ def none_safe_str(data):
     else:
         return str(data)
 
+
 def change_bool(param):
     if isinstance(param, bool):
         return param
@@ -19,12 +20,14 @@ def change_bool(param):
             return True
     return False
 
+
 def list_parse(str_param, format_type=int):
     """ 获取以逗号分隔的参数 """
     try:
         return [format_type(param) for param in str_param.strip().split(",")]
     except BaseException:
         return None
+
 
 def validate_enum_type(enum_type):
 
@@ -35,6 +38,7 @@ def validate_enum_type(enum_type):
             raise SchemaError(f"not support type in {enum_type.__name__}")
 
     return _wrap
+
 
 def email_schema():
     """ 校验邮箱合法性 """

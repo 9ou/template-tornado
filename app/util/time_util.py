@@ -1,6 +1,6 @@
 import functools
 import logging
-import types
+import asyncio
 from datetime import datetime
 
 import pytz
@@ -76,6 +76,17 @@ def timeout_log(timeout=10, tag="", debug=False):
             result = await func(*args, **kwargs)
             _time_log(start, now(), func.__name__)
             return result
-        return _async_wrapper
+        
+        @functools.wraps(func)
+        def _sync_wrapper(*args, **kwargs):
+            start = now()
+            result = func(*args, **kwargs)
+            _time_log(start, now(), func.__name__)
+            return result
+        
+        if asyncio.iscoroutinefunction(func):
+            return _async_wrapper
+        else:
+            return _sync_wrapper
 
     return decorator

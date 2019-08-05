@@ -1,6 +1,6 @@
 #!/bin/bash
 PROJECT_NAME="template-tornado"
-LOG_DIR=/data/log/${PROJECT_NAME}
+LOG_DIR=/app/log/${PROJECT_NAME}
 
 NOTICE_ENV="Can not load ${ENV} from system, only (dev, test, pre, prod) is available"
 NOTICE_USAGE="Usage: `basename $0` cmd(start, stop, restart, log) env(dev, test, pre, prod, or load \${ENV} from system)"

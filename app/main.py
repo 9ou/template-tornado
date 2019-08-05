@@ -39,20 +39,22 @@ DELAY_TASKS = []
 PERIODIC_TASKS = [
     {
         "callback": periodic_task.delete_expired_local_cache,
-        "callback_time": 1000,
+        "callback_time": 1000
     }
 ]
 
 MODEL_ROUTERS = [
     {
         "routers": router.ROUTERS,
-        "prefix": "",
+        "prefix": ""
     }
 ]
 
 
 def main():
     settings = config.server
+    settings["static_path"] = config.static_path
+    settings["template_path"] = config.template_path
     port = settings.pop("port")
     address = settings.pop("host")
     sockets = bind_sockets(port, address=address)

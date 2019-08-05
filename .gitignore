@@ -2,5 +2,6 @@
 .vscode
 __pycache__
 *.pyc
-venv
+node_modules
+dist
 app/config/config.local.yaml
