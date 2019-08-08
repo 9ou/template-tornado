@@ -17,8 +17,8 @@ class IndexService(object):
         return area
     
     @classmethod
-    # @timeout_log(timeout=4, tag="Index")
-    # @local_cache(expire=3)
+    @timeout_log(timeout=4, tag="Index")
+    @local_cache(expire=3)
     async def get_basic_info(cls):
         """ 接口的通用参数可以统一放在 Basic-Info 这个 Header 中
             本地缓存效果：第一次会请求耗时 5 秒左右，3 秒内再次请求会立即返回结果，3 秒后再请求又会耗时 5 秒
