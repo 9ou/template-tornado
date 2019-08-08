@@ -22,7 +22,7 @@ class IndexHandler(BasicHandler):
             Optional("length", default=3): Use(int),
             Optional("width", default=5): Use(int)
         })
-        area = IndexService.calc_area(length=params["length"], width=params["width"])
+        area = IndexService.calc_area(**params)
         basic_info = await IndexService.get_basic_info()
         result = {
             "area": area,
