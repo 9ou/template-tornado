@@ -16,7 +16,7 @@ class IndexService(object):
         time.sleep(5)
         area = length * width
         return area
-    
+
     @classmethod
     @timeout_log(timeout=4, tag="Index")
     @local_cache(expire=3)
