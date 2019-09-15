@@ -7,8 +7,8 @@ server:
   thread_worker: 60
 
 http:
-  timeout: 3
-  retry: 3
+  timeout: 5
+  retry: 2
 
 redis:
   host: "127.0.0.1"
